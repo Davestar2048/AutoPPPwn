@@ -1,7 +1,7 @@
 #!/bin/bash
 
-if [ -f /boot/firmware/PPPwn/config.sh ]; then
-source /boot/firmware/PPPwn/config.sh
+if [ -f ~/AutoPPPwn/PPPwn/config.sh ]; then
+source ~/AutoPPPwn/PPPwn/config.sh
 fi
 if [ -z $INTERFACE ]; then INTERFACE="eth0"; fi
 if [ -z $DTLINK ]; then DTLINK=false; fi

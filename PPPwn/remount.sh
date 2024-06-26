@@ -1,7 +1,7 @@
 #!/bin/bash
 
-if [ -f /boot/firmware/PPPwn/config.sh ]; then
-source /boot/firmware/PPPwn/config.sh
+if [ -f ~/AutoPPPwn/PPPwn/config.sh ]; then
+source ~/AutoPPPwn/PPPwn/config.sh
 fi
 if [ -z $VMUSB ]; then VMUSB=false; fi
 if [ $VMUSB = true ] ; then
@@ -23,7 +23,7 @@ if [ -z $1 ]; then
       fi
   done  
   if [[ ! -z $UDEV ]] ;then
-    echo $UDEV | sudo tee /boot/firmware/PPPwn/vdev.txt
+    echo $UDEV | sudo tee ~/AutoPPPwn/PPPwn/vdev.txt
     sudo modprobe g_mass_storage file=$UDEV stall=0 ro=0 removable=1
 	echo -e "\033[92mUSB Drive:\033[93m Remounted\033[0m" | sudo tee /dev/tty1
   fi
@@ -37,7 +37,7 @@ else
   done
   if [[ ! -z $UDEV ]] ;then
     sudo rmmod g_mass_storage
-	echo $UDEV | sudo tee /boot/firmware/PPPwn/vdev.txt
+	echo $UDEV | sudo tee ~/AutoPPPwn/PPPwn/vdev.txt
     sudo modprobe g_mass_storage file=$UDEV stall=0 ro=0 removable=1
   fi
 fi

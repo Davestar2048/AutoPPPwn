@@ -1,15 +1,15 @@
 #!/bin/bash
 
-if [ -f /boot/firmware/PPPwn/config.sh ]; then
-source /boot/firmware/PPPwn/config.sh
+if [ -f ~/AutoPPPwn/PPPwn/config.sh ]; then
+source ~/AutoPPPwn/PPPwn/config.sh
 fi
 if [ -z $PYPWN ]; then PYPWN=false; fi
 if [ $PYPWN = true ] ; then
-sudo bash /boot/firmware/PPPwn/runpy.sh
+sudo bash ~/AutoPPPwn/PPPwn/runpy.sh
 exit 0
 fi
-if [ -f /boot/firmware/PPPwn/pconfig.sh ]; then
-source /boot/firmware/PPPwn/pconfig.sh
+if [ -f ~/AutoPPPwn/PPPwn/pconfig.sh ]; then
+source ~/AutoPPPwn/PPPwn/pconfig.sh
 fi
 if [ -z $INTERFACE ]; then INTERFACE="eth0"; fi
 if [ -z $FIRMWAREVERSION ]; then FIRMWAREVERSION="11.00"; fi
@@ -139,8 +139,8 @@ if [ $PPPOECONN = true ] ; then
 else   
    echo -e "\033[92mInternet Access:\033[93m Disabled\033[0m" | sudo tee /dev/tty1
 fi
-if [ -f /boot/firmware/PPPwn/pwn.log ]; then
-   sudo rm -f /boot/firmware/PPPwn/pwn.log
+if [ -f ~/AutoPPPwn/PPPwn/pwn.log ]; then
+   sudo rm -f ~/AutoPPPwn/PPPwn/pwn.log
 fi
 if [[ $LEDACT == "status" ]] ;then
    echo timer | sudo tee $PLED >/dev/null
@@ -214,8 +214,8 @@ if [[ $LEDACT == "status" ]] ;then
 	echo heartbeat | sudo tee $PLED >/dev/null
 	echo timer | sudo tee $ALED >/dev/null
 fi
-if [ -f /boot/firmware/PPPwn/config.sh ]; then
- if  grep -Fxq "PPDBG=true" /boot/firmware/PPPwn/config.sh ; then
+if [ -f ~/AutoPPPwn/PPPwn/config.sh ]; then
+ if  grep -Fxq "PPDBG=true" ~/AutoPPPwn/PPPwn/config.sh ; then
    PPDBG=true
    else
    PPDBG=false
@@ -224,7 +224,7 @@ fi
 while read -r stdo ; 
 do 
  if [ $PPDBG = true ] ; then
-	echo -e $stdo | sudo tee /dev/tty1 | sudo tee /dev/pts/* | sudo tee -a /boot/firmware/PPPwn/pwn.log
+	echo -e $stdo | sudo tee /dev/tty1 | sudo tee /dev/pts/* | sudo tee -a ~/AutoPPPwn/PPPwn/pwn.log
  fi
  if [[ $stdo  == "[+] Done!" ]] ; then
 	echo -e "\033[32m\nConsole PPPwned! \033[0m\n" | sudo tee /dev/tty1
@@ -269,7 +269,7 @@ do
 	fi
  	exit 1
  fi
-done < <(timeout $TIMEOUT sudo /boot/firmware/PPPwn/$CPPBIN --interface "$INTERFACE" --fw "${FIRMWAREVERSION//.}" --ipv "$XFIP" --wait-after-pin $XFWAP --groom-delay $XFGD --buffer-size $XFBS $XFNW)
+done < <(timeout $TIMEOUT sudo ~/AutoPPPwn/PPPwn/$CPPBIN --interface "$INTERFACE" --fw "${FIRMWAREVERSION//.}" --ipv "$XFIP" --wait-after-pin $XFWAP --groom-delay $XFGD --buffer-size $XFBS $XFNW)
 if [[ $LEDACT == "status" ]] ;then
  	echo none | sudo tee $ALED >/dev/null
  	echo default-on | sudo tee $PLED >/dev/null

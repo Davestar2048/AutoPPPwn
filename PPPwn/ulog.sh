@@ -1,9 +1,9 @@
 #!/bin/bash
 
-if [ -f /boot/firmware/PPPwn/upd.log ]; then
-   sudo rm -f /boot/firmware/PPPwn/upd.log
+if [ -f ~/AutoPPPwn/PPPwn/upd.log ]; then
+   sudo rm -f ~/AutoPPPwn/PPPwn/upd.log
 fi
 while read -r stdo ; 
 do 
-  echo -e $stdo | sudo tee /dev/tty1 | sudo tee /dev/pts/* | sudo tee -a /boot/firmware/PPPwn/upd.log
-done < <(sudo bash /boot/firmware/PPPwn/update.sh)
+  echo -e $stdo | sudo tee /dev/tty1 | sudo tee /dev/pts/* | sudo tee -a ~/AutoPPPwn/PPPwn/upd.log
+done < <(sudo bash ~/AutoPPPwn/PPPwn/update.sh)

@@ -1,8 +1,8 @@
 #!/bin/bash
  
 
-if [ ! -d /boot/firmware/PPPwn/payloads ]; then
-  sudo mkdir /boot/firmware/PPPwn/payloads
+if [ ! -d ~/AutoPPPwn/PPPwn/payloads ]; then
+  sudo mkdir ~/AutoPPPwn/PPPwn/payloads
 fi
 if [ -z $1 ] ;then
 sudo apt install pppoe dnsmasq iptables nginx php-fpm nmap at net-tools -y
@@ -26,7 +26,7 @@ noipdefault
 usepeerdns' | sudo tee /etc/ppp/pppoe-server-options
 echo '[Service]
 WorkingDirectory=/boot/firmware/PPPwn
-ExecStart=/boot/firmware/PPPwn/pppoe.sh
+ExecStart=~/AutoPPPwn/PPPwn/pppoe.sh
 Restart=never
 User=root
 Group=root
@@ -35,7 +35,7 @@ Environment=NODE_ENV=production
 WantedBy=multi-user.target' | sudo tee /etc/systemd/system/pppoe.service
 echo '[Service]
 WorkingDirectory=/boot/firmware/PPPwn
-ExecStart=/boot/firmware/PPPwn/dtlink.sh
+ExecStart=~/AutoPPPwn/PPPwn/dtlink.sh
 Restart=never
 User=root
 Group=root
@@ -67,8 +67,8 @@ sudo /etc/init.d/nginx restart
 if [ ! -f /etc/udev/rules.d/99-pwnmnt.rules ]; then
 sudo mkdir /media/pwndrives
 echo 'MountFlags=shared' | sudo tee -a /usr/lib/systemd/system/systemd-udevd.service
-echo 'ACTION=="add", KERNEL=="sd*", SUBSYSTEMS=="usb|scsi", DRIVERS=="sd", SYMLINK+="usbdrive", RUN+="/boot/firmware/PPPwn/pwnmount.sh $kernel"
-ACTION=="remove", SUBSYSTEM=="block", RUN+="/boot/firmware/PPPwn/pwnumount.sh $kernel"' | sudo tee /etc/udev/rules.d/99-pwnmnt.rules
+echo 'ACTION=="add", KERNEL=="sd*", SUBSYSTEMS=="usb|scsi", DRIVERS=="sd", SYMLINK+="usbdrive", RUN+="~/AutoPPPwn/PPPwn/pwnmount.sh $kernel"
+ACTION=="remove", SUBSYSTEM=="block", RUN+="~/AutoPPPwn/PPPwn/pwnumount.sh $kernel"' | sudo tee /etc/udev/rules.d/99-pwnmnt.rules
 sudo udevadm control --reload
 fi
 if [ -f /media/pwndrives ]; then
@@ -78,12 +78,12 @@ PPSTAT=$(sudo systemctl list-unit-files --state=enabled --type=service|grep pppo
 if [[ ! $PPSTAT == "" ]] ; then
 sudo systemctl disable pppoe
 fi
-if [ ! -f /boot/firmware/PPPwn/ports.txt ]; then
-echo '2121,3232,9090,8080,12800,1337' | sudo tee /boot/firmware/PPPwn/ports.txt
+if [ ! -f ~/AutoPPPwn/PPPwn/ports.txt ]; then
+echo '2121,3232,9090,8080,12800,1337' | sudo tee ~/AutoPPPwn/PPPwn/ports.txt
 fi
 sudo sed -i 's^"exit 0"^"exit"^g' /etc/rc.local
-sudo sed -i 's^sudo bash /boot/firmware/PPPwn/devboot.sh \&^^g' /etc/rc.local
-sudo sed -i 's^exit 0^sudo bash /boot/firmware/PPPwn/devboot.sh \&\n\nexit 0^g' /etc/rc.local
+sudo sed -i 's^sudo bash ~/AutoPPPwn/PPPwn/devboot.sh \&^^g' /etc/rc.local
+sudo sed -i 's^exit 0^sudo bash ~/AutoPPPwn/PPPwn/devboot.sh \&\n\nexit 0^g' /etc/rc.local
 if [[ $(dpkg-query -W --showformat='${Status}\n' python3-scapy|grep "install ok installed")  == "" ]] ;then
 while true; do
 read -p "$(printf '\r\n\r\n\033[36mDo you want to enable the option to use the python(slower) PPPwn\033[36m(Y|N)?: \033[0m')" pypwnopt
@@ -216,7 +216,7 @@ echo '[global]
    guest ok = no
 ;   write list = root, @lpadmin
 [pppwn]
-path = /boot/firmware/PPPwn/
+path = ~/AutoPPPwn/PPPwn/
 writeable=Yes
 create mask=0777
 read only = no
@@ -236,7 +236,7 @@ break;;
 esac
 done
 fi
-if [ -f /boot/firmware/PPPwn/config.sh ]; then
+if [ -f ~/AutoPPPwn/PPPwn/config.sh ]; then
 while true; do
 read -p "$(printf '\r\n\r\n\033[36mConfig found, Do you want to change the stored settings\033[36m(Y|N)?: \033[0m')" conf
 case $conf in
@@ -611,17 +611,17 @@ TIMEOUT="'${TOUT/ /}'m"
 PYPWN='$UPYPWN'
 LEDACT="normal"
 DDNS=false
-OIPV='$IPV'' | sudo tee /boot/firmware/PPPwn/config.sh
+OIPV='$IPV'' | sudo tee ~/AutoPPPwn/PPPwn/config.sh
 echo '#!/bin/bash
 XFWAP="1"
 XFGD="4"
 XFBS="0"
-XFNWB=false' | sudo tee /boot/firmware/PPPwn/pconfig.sh
+XFNWB=false' | sudo tee ~/AutoPPPwn/PPPwn/pconfig.sh
 sudo rm -f /usr/lib/systemd/system/network-online.target
-sudo sed -i 's^sudo bash /boot/firmware/PPPwn/run.sh \&^^g' /etc/rc.local
+sudo sed -i 's^sudo bash ~/AutoPPPwn/PPPwn/run.sh \&^^g' /etc/rc.local
 echo '[Service]
 WorkingDirectory=/boot/firmware/PPPwn
-ExecStart=/boot/firmware/PPPwn/run.sh
+ExecStart=~/AutoPPPwn/PPPwn/run.sh
 Restart=never
 User=root
 Group=root
@@ -641,7 +641,7 @@ else
 if [[ $(dpkg-query -W --showformat='${Status}\n' net-tools|grep "install ok installed")  == "" ]] ;then
 sudo apt install net-tools -y
 fi
-echo "Update complete, Rebooting."  | sudo tee /dev/tty1 | sudo tee /dev/pts/* | sudo tee -a /boot/firmware/PPPwn/upd.log
+echo "Update complete, Rebooting."  | sudo tee /dev/tty1 | sudo tee /dev/pts/* | sudo tee -a ~/AutoPPPwn/PPPwn/upd.log
 coproc read -t 6 && wait "$!" || true
 sudo reboot
 fi

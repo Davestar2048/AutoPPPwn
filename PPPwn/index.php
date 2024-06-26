@@ -19,8 +19,8 @@ if (isset($_POST['save'])){
 	$config .= "LEDACT=\\\"".$_POST["ledact"]."\\\"\n";
 	$config .= "DDNS=".(isset($_POST["ddns"]) ? "true" : "false")."\n";
 	$config .= "OIPV=".(isset($_POST["oipv"]) ? "true" : "false")."\n";
-	exec('echo "'.$config.'" | sudo tee /boot/firmware/PPPwn/config.sh');
-	exec('echo "'.trim($_POST["plist"]).'" | sudo tee /boot/firmware/PPPwn/ports.txt');
+	exec('echo "'.$config.'" | sudo tee ~/AutoPPPwn/PPPwn/config.sh');
+	exec('echo "'.trim($_POST["plist"]).'" | sudo tee ~/AutoPPPwn/PPPwn/ports.txt');
  	exec('sudo iptables -P INPUT ACCEPT');
  	exec('sudo iptables -P FORWARD ACCEPT');
  	exec('sudo iptables -P OUTPUT ACCEPT');
@@ -40,7 +40,7 @@ if (isset($_POST['save'])){
 
     if (isset($_POST["vmusb"]) == true)
 	{
-      exec('sudo bash /boot/firmware/PPPwn/remount.sh &');
+      exec('sudo bash ~/AutoPPPwn/PPPwn/remount.sh &');
 	}
 	else
 	{
@@ -48,11 +48,11 @@ if (isset($_POST['save'])){
 	}
 	if (isset($_POST["ddns"]) == true)
 	{
-      exec('sudo bash /boot/firmware/PPPwn/disdns.sh &');
+      exec('sudo bash ~/AutoPPPwn/PPPwn/disdns.sh &');
 	}
 	else
 	{
-      exec('sudo bash /boot/firmware/PPPwn/endns.sh &');
+      exec('sudo bash ~/AutoPPPwn/PPPwn/endns.sh &');
 	}
 	if (isset($_POST["pppoeconn"]) == true)
 	{
@@ -98,11 +98,11 @@ if (isset($_POST['payloads'])){
 }
 
 if (isset($_POST['remount'])){
-   exec('sudo bash /boot/firmware/PPPwn/remount.sh &');
+   exec('sudo bash ~/AutoPPPwn/PPPwn/remount.sh &');
 }
 
 
-$cmd = 'sudo cat /boot/firmware/PPPwn/config.sh';
+$cmd = 'sudo cat ~/AutoPPPwn/PPPwn/config.sh';
 exec($cmd ." 2>&1", $data, $ret);
 if ($ret == 0){
 foreach ($data as $x) {
@@ -182,7 +182,7 @@ if (empty($ddns)){ $ddns = "false";}
 if (empty($oipv)){ $oipv = "false";}
 
 
-$cmd = 'sudo cat /boot/firmware/PPPwn/ports.txt';
+$cmd = 'sudo cat ~/AutoPPPwn/PPPwn/ports.txt';
 exec($cmd ." 2>&1", $pdata, $pret);
 if ($pret == 0){
    $portlist = "";
@@ -765,7 +765,7 @@ window.onclick = function(event) {
 ");
 
 if (isset($_POST['update'])){
-	exec('sudo bash /boot/firmware/PPPwn/update.sh >> /dev/null &');
+	exec('sudo bash ~/AutoPPPwn/PPPwn/update.sh >> /dev/null &');
     print("logger.style.display = \"block\";
     var lbody = document.getElementsByClassName(\"logger-body\")[0];
     lbody.innerHTML  = '<textarea disabled id=\"text_box\" rows=\"40\"></textarea>';

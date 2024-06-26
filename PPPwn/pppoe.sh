@@ -1,7 +1,7 @@
 #!/bin/bash
 
-if [ -f /boot/firmware/PPPwn/config.sh ]; then
-source /boot/firmware/PPPwn/config.sh
+if [ -f ~/AutoPPPwn/PPPwn/config.sh ]; then
+source ~/AutoPPPwn/PPPwn/config.sh
 fi
 if [ -z $INTERFACE ]; then INTERFACE="eth0"; fi
 if [ -z $USBETHERNET ]; then USBETHERNET=false; fi
@@ -26,8 +26,8 @@ sudo iptables -X
 sudo sysctl net.ipv4.ip_forward=1
 sudo sysctl net.ipv4.conf.all.route_localnet=1
 sudo iptables -t nat -I PREROUTING -s 192.168.2.0/24 -p udp -m udp --dport 53 -j DNAT --to-destination 127.0.0.1:5353
-if [ -f /boot/firmware/PPPwn/ports.txt ]; then
-	PORTS=$(sudo cat /boot/firmware/PPPwn/ports.txt | tr "," "\n")
+if [ -f ~/AutoPPPwn/PPPwn/ports.txt ]; then
+	PORTS=$(sudo cat ~/AutoPPPwn/PPPwn/ports.txt | tr "," "\n")
 	for prt in $PORTS
 	do
     	sudo iptables -t nat -I PREROUTING -p tcp --dport ${prt/-/:} -j DNAT --to 192.168.2.2:${prt/:/-}

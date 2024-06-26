@@ -1,7 +1,7 @@
 #!/bin/bash
 
-if [ -f /boot/firmware/PPPwn/config.sh ]; then
-source /boot/firmware/PPPwn/config.sh
+if [ -f ~/AutoPPPwn/PPPwn/config.sh ]; then
+source ~/AutoPPPwn/PPPwn/config.sh
 fi
 if [ -z $INTERFACE ]; then INTERFACE="eth0"; fi
 if [ -z $FIRMWAREVERSION ]; then FIRMWAREVERSION="11.00"; fi
@@ -184,8 +184,8 @@ fi
 sudo ip link set $INTERFACE down
 coproc read -t 5 && wait "$!" || true
 sudo ip link set $INTERFACE up
-if [ -f /boot/firmware/PPPwn/config.sh ]; then
- if  grep -Fxq "PPDBG=true" /boot/firmware/PPPwn/config.sh ; then
+if [ -f ~/AutoPPPwn/PPPwn/config.sh ]; then
+ if  grep -Fxq "PPDBG=true" ~/AutoPPPwn/PPPwn/config.sh ; then
    PPDBG=true
    else
    PPDBG=false
@@ -194,7 +194,7 @@ fi
 while read -r stdo ; 
 do 
  if [ $PPDBG = true ] ; then
-	echo -e $stdo | sudo tee /dev/tty1 | sudo tee /dev/pts/* | sudo tee -a /boot/firmware/PPPwn/pwn.log
+	echo -e $stdo | sudo tee /dev/tty1 | sudo tee /dev/pts/* | sudo tee -a ~/AutoPPPwn/PPPwn/pwn.log
  fi
  if [[ $stdo  == "[+] Done!" ]] ; then
 	echo -e "\033[32m\nConsole PPPwned! \033[0m\n" | sudo tee /dev/tty1
@@ -237,7 +237,7 @@ do
 	fi
  	exit 1
  fi
-done < <(timeout $TIMEOUT sudo python3 /boot/firmware/PPPwn/pppwn.py --interface=$INTERFACE --fw=${FIRMWAREVERSION//.} --ipv=$PYIP)
+done < <(timeout $TIMEOUT sudo python3 ~/AutoPPPwn/PPPwn/pppwn.py --interface=$INTERFACE --fw=${FIRMWAREVERSION//.} --ipv=$PYIP)
 if [[ $LEDACT == "status" ]] ;then
  	echo none | sudo tee $ALED >/dev/null
  	echo default-on | sudo tee $PLED >/dev/null
