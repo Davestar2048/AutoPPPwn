@@ -497,7 +497,7 @@ $cmd = 'sudo tr -d \'\0\' </proc/device-tree/model';
 exec($cmd ." 2>&1", $pidata, $ret);
 if (str_starts_with(trim(implode($pidata)),  "Raspberry Pi 4") || str_starts_with(trim(implode($pidata)), "Raspberry Pi 5"))
 {
-$cmd = 'sudo cat /boot/firmware/config.txt | grep "dtoverlay=dwc2"';
+$cmd = 'sudo cat ~/AutoPPPwn/config.txt | grep "dtoverlay=dwc2"';
 exec($cmd ." 2>&1", $dwcdata, $ret);
 $dwcval = trim(implode($dwcdata)); 
 if ($vmusb == "true" && ! empty($dwcval))

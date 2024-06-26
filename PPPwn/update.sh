@@ -16,7 +16,7 @@ cd PI-Pwn
 echo "Starting update..." | sudo tee /dev/tty1 | sudo tee /dev/pts/* | sudo tee -a ~/AutoPPPwn/PPPwn/upd.log
 sudo systemctl stop pipwn
 echo "Installing files... " | sudo tee /dev/tty1 | sudo tee /dev/pts/* | sudo tee -a ~/AutoPPPwn/PPPwn/upd.log
-sudo cp -r PPPwn /boot/firmware/
+sudo cp -r PPPwn ~/AutoPPPwn/
 FOUND=0
 readarray -t rdirarr  < <(sudo ls /media/pwndrives)
 for rdir in "${rdirarr[@]}"; do
@@ -40,7 +40,7 @@ if [[ ! -z $PSDRIVE ]] ;then
      sudo cp "USB Drive/goldhen.bin" $PSDRIVE
   fi
 fi
-cd /boot/firmware/PPPwn
+cd ~/AutoPPPwn/PPPwn
 sudo chmod 777 *
 sudo bash install.sh update
 else

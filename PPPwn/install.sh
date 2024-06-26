@@ -6,52 +6,17 @@ if [ ! -d ~/AutoPPPwn/PPPwn/payloads ]; then
 fi
 if [ -z $1 ] ;then
 sudo apt install pppoe dnsmasq iptables nginx php-fpm nmap at net-tools -y
-echo 'bogus-priv
-expand-hosts
-domain-needed
-server=8.8.8.8
-listen-address=127.0.0.1
-port=5353
-conf-file=/etc/dnsmasq.more.conf' | sudo tee /etc/dnsmasq.conf
-echo 'auth
-lcp-echo-failure 3
-lcp-echo-interval 60
-mtu 1482
-mru 1482
-require-pap
-ms-dns 192.168.2.1
-netmask 255.255.255.0
-defaultroute
-noipdefault
-usepeerdns' | sudo tee /etc/ppp/pppoe-server-options
-echo '[Service]
-WorkingDirectory=/boot/firmware/PPPwn
-ExecStart=~/AutoPPPwn/PPPwn/pppoe.sh
-Restart=never
-User=root
-Group=root
-Environment=NODE_ENV=production
-[Install]
-WantedBy=multi-user.target' | sudo tee /etc/systemd/system/pppoe.service
-echo '[Service]
-WorkingDirectory=/boot/firmware/PPPwn
-ExecStart=~/AutoPPPwn/PPPwn/dtlink.sh
-Restart=never
-User=root
-Group=root
-Environment=NODE_ENV=production
-[Install]
-WantedBy=multi-user.target' | sudo tee /etc/systemd/system/dtlink.service
+
+
 PHPVER=$(sudo php -v | head -n 1 | cut -d " " -f 2 | cut -f1-2 -d".")
 echo 'server {
 	listen 80 default_server;
 	listen [::]:80 default_server;
-	root /boot/firmware/PPPwn;
+	root ~/AutoPPPwn/PPPwn;
 	index index.html index.htm index.php;
 	server_name _;
 	location / {
 		try_files $uri $uri/ =404;
-	}
 	error_page 404 = @mainindex;
 	location @mainindex {
 	return 302 /;
@@ -61,14 +26,14 @@ echo 'server {
     fastcgi_pass unix:/var/run/php/php'$PHPVER'-fpm.sock;
 	}
 }' | sudo tee /etc/nginx/sites-enabled/default
-sudo sed -i "s^www-data	ALL=(ALL) NOPASSWD: ALL^^g" /etc/sudoers
-echo 'www-data	ALL=(ALL) NOPASSWD: ALL' | sudo tee -a /etc/sudoers
+#sudo sed -i "s^www-data	ALL=(ALL) NOPASSWD: ALL^^g" /etc/sudoers
+#echo 'www-data	ALL=(ALL) NOPASSWD: ALL' | sudo tee -a /etc/sudoers
 sudo /etc/init.d/nginx restart
 if [ ! -f /etc/udev/rules.d/99-pwnmnt.rules ]; then
 sudo mkdir /media/pwndrives
-echo 'MountFlags=shared' | sudo tee -a /usr/lib/systemd/system/systemd-udevd.service
-echo 'ACTION=="add", KERNEL=="sd*", SUBSYSTEMS=="usb|scsi", DRIVERS=="sd", SYMLINK+="usbdrive", RUN+="~/AutoPPPwn/PPPwn/pwnmount.sh $kernel"
-ACTION=="remove", SUBSYSTEM=="block", RUN+="~/AutoPPPwn/PPPwn/pwnumount.sh $kernel"' | sudo tee /etc/udev/rules.d/99-pwnmnt.rules
+#echo 'MountFlags=shared' | sudo tee -a /usr/lib/systemd/system/systemd-udevd.service
+#echo 'ACTION=="add", KERNEL=="sd*", SUBSYSTEMS=="usb|scsi", DRIVERS=="sd", SYMLINK+="usbdrive", RUN+="~/AutoPPPwn/PPPwn/pwnmount.sh $kernel"
+#ACTION=="remove", SUBSYSTEM=="block", RUN+="~/AutoPPPwn/PPPwn/pwnumount.sh $kernel"' | sudo tee /etc/udev/rules.d/99-pwnmnt.rules
 sudo udevadm control --reload
 fi
 if [ -f /media/pwndrives ]; then
@@ -124,7 +89,7 @@ local_umask=077
 allow_writeable_chroot=YES
 chroot_local_user=YES
 user_sub_token=$USER
-local_root=/boot/firmware/PPPwn" | sudo tee /etc/vsftpd.conf
+local_root=~/AutoPPPwn/PPPwn" | sudo tee /etc/vsftpd.conf
 sudo sed -i 's^root^^g' /etc/ftpusers
 echo -e '\n\n\033[33mTo use FTP you must set the \033[36mroot\033[33m account password so you can login to the ftp server with full write permissions\033[0m\n'
 while true; do
@@ -314,7 +279,7 @@ break;;
 * ) echo -e '\033[31mPlease answer Y or N\033[0m';;
 esac
 done
-echo '"'$PPPU'"  *  "'$PPPW'"  192.168.2.2' | sudo tee /etc/ppp/pap-secrets
+#echo '"'$PPPU'"  *  "'$PPPW'"  192.168.2.2' | sudo tee /etc/ppp/pap-secrets
 while true; do
 read -p "$(printf '\r\n\r\n\033[36mDo you want to detect console shutdown and restart PPPwn\r\n\r\n\033[36m(Y|N)?: \033[0m')" dlnk
 case $dlnk in
@@ -532,13 +497,13 @@ read -p "$(printf '\r\n\r\n\033[36mDo you want the pi to act as a flash drive to
 case $vusb in
 [Yy]* ) 
 echo -e '\033[32mThe pi will mount as a drive\n\033[33mYou must plug the pi into the console usb port using the \033[35musb-c\033[33m of the pi and the usb drive in the pi must contain a folder named \033[35mpayloads\033[0m'
-sudo sed -i "s^dtoverlay=dwc2^^g" /boot/firmware/config.txt
-echo 'dtoverlay=dwc2' | sudo tee -a /boot/firmware/config.txt
+sudo sed -i "s^dtoverlay=dwc2^^g" ~/AutoPPPwn/config.txt
+echo 'dtoverlay=dwc2' | sudo tee -a ~/AutoPPPwn/config.txt
 VUSB="true"
 break;;
 [Nn]* ) 
 echo -e '\033[35mThe pi will not mount as a drive\033[0m'
-sudo sed -i "s^dtoverlay=dwc2^^g" /boot/firmware/config.txt
+sudo sed -i "s^dtoverlay=dwc2^^g" ~/AutoPPPwn/config.txt
 VUSB="false"
 break;;
 * ) echo -e '\033[31mPlease answer Y or N\033[0m';;
@@ -620,7 +585,7 @@ XFNWB=false' | sudo tee ~/AutoPPPwn/PPPwn/pconfig.sh
 sudo rm -f /usr/lib/systemd/system/network-online.target
 sudo sed -i 's^sudo bash ~/AutoPPPwn/PPPwn/run.sh \&^^g' /etc/rc.local
 echo '[Service]
-WorkingDirectory=/boot/firmware/PPPwn
+WorkingDirectory=~/AutoPPPwn/PPPwn
 ExecStart=~/AutoPPPwn/PPPwn/run.sh
 Restart=never
 User=root
@@ -636,12 +601,12 @@ CHSTN=$(hostname | cut -f1 -d' ')
 sudo sed -i "s^$CHSTN^$HSTN^g" /etc/hosts
 sudo sed -i "s^$CHSTN^$HSTN^g" /etc/hostname
 echo -e '\033[36mInstall complete,\033[33m Rebooting\033[0m'
-sudo reboot
+sudo echo reboot
 else
 if [[ $(dpkg-query -W --showformat='${Status}\n' net-tools|grep "install ok installed")  == "" ]] ;then
 sudo apt install net-tools -y
 fi
 echo "Update complete, Rebooting."  | sudo tee /dev/tty1 | sudo tee /dev/pts/* | sudo tee -a ~/AutoPPPwn/PPPwn/upd.log
 coproc read -t 6 && wait "$!" || true
-sudo reboot
+sudo echo reboot
 fi
